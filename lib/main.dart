@@ -22,9 +22,8 @@ class ToDoScreen extends StatefulWidget {
 class _ToDoScreenState extends State<ToDoScreen> {
   final TextEditingController _taskController = TextEditingController();
   DateTime? selectedDate;
-  List<Map<String, dynamic>> taskList = []; // Liste des tâches
+  List<Map<String, dynamic>> taskList = [];
 
-  // Fonction pour ouvrir le sélecteur de date
   Future<void> _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -39,7 +38,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
     }
   }
 
-  // Fonction pour ajouter une tâche à la liste
   void _addTask() {
     if (_taskController.text.isNotEmpty && selectedDate != null) {
       setState(() {
@@ -51,6 +49,47 @@ class _ToDoScreenState extends State<ToDoScreen> {
         selectedDate = null;
       });
     }
+  }
+
+  void _editTask(int index) {
+    TextEditingController editController =
+    TextEditingController(text: taskList[index]["task"]);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Edit Task"),
+          content: TextField(
+            controller: editController,
+            decoration: InputDecoration(
+              hintText: "Update task label",
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text("Save"),
+              onPressed: () {
+                setState(() {
+                  taskList[index]["task"] = editController.text;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteTask(int index) {
+    setState(() {
+      taskList.removeAt(index);
+    });
   }
 
   @override
@@ -83,9 +122,18 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     subtitle: Text(
                       "Due: ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
                     ),
-                    trailing: Checkbox(
-                      value: true,
-                      onChanged: (bool? value) {},
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => _editTask(index),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteTask(index),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -119,7 +167,6 @@ class ToDoHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Titre et icône Menu
           Row(
             children: [
               Icon(Icons.menu, size: 30, color: Colors.black),
@@ -134,8 +181,6 @@ class ToDoHeader extends StatelessWidget {
               ),
             ],
           ),
-
-          // Section centrale avec "Add a task" et le champ texte
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -177,8 +222,6 @@ class ToDoHeader extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bouton pour ajouter la tâche
           IconButton(
             icon: Icon(Icons.add_circle, size: 40, color: Colors.purple),
             onPressed: addTask,
