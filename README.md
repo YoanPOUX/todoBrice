@@ -46,5 +46,3 @@ TaskMaster est une application de gestion des tâches qui aide les utilisateurs 
 
 ### **Pourquoi cette appli ?**
 Elle **facilite l’organisation quotidienne** en classant intelligemment les tâches, tout en évitant l’oubli grâce aux rappels et au mode focus. Son approche **interactive et intuitive** en fait un outil puissant pour toute personne cherchant à **booster sa productivité**.
-
-💡 **Tu veux ajuster certains éléments ou ajouter d’autres fonctionnalités ?** 😊
