@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/settings.dart';
+import 'package:todo_list/editTasks.dart';
 
 
 void main() {
@@ -158,7 +159,12 @@ class _ToDoScreenState extends State<ToDoScreen> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _editTask(index),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => EditTasksPage(index)),
+                            );
+                          }
                         ),
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
