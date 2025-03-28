@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/settings.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -92,14 +94,43 @@ class _ToDoScreenState extends State<ToDoScreen> {
     });
   }
 
+  void _openSettings() {
+    print("Navigate to Settings page"); // Future implementation: Navigate to settings.dart
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: Text('Home', style: TextStyle(color: Colors.white)),
+        title: Text('ToDoBrice', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white), // Set the burger icon color to white
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.black),
+              child: Text(
+                "ToDoBrice Menu",
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
+
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -164,64 +195,38 @@ class ToDoHeader extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
+          Text(
+            "Add a task:",
+            style: TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          SizedBox(height: 5),
           Row(
             children: [
-              Icon(Icons.menu, size: 30, color: Colors.black),
-              SizedBox(width: 10),
-              Text(
-                "To Do Brice",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              Expanded(
+                child: TextField(
+                  controller: taskController,
+                  decoration: InputDecoration(
+                    hintText: "Label",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  ),
                 ),
+              ),
+              IconButton(
+                icon: Icon(Icons.calendar_today, size: 30, color: Colors.black),
+                onPressed: selectDate,
               ),
             ],
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  Text(
-                    "Add a task :",
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: taskController,
-                          decoration: InputDecoration(
-                            hintText: "Label",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.calendar_today,
-                            size: 30, color: Colors.black),
-                        onPressed: selectDate,
-                      ),
-                    ],
-                  ),
-                  if (selectedDate != null)
-                    Text(
-                      "Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                ],
-              ),
+          if (selectedDate != null)
+            Text(
+              "Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
-          ),
           IconButton(
             icon: Icon(Icons.add_circle, size: 40, color: Colors.purple),
             onPressed: addTask,
