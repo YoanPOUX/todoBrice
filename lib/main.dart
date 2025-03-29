@@ -4,28 +4,30 @@ import 'package:todo_list/settings.dart'; // Import de SettingsPage
 import 'ThemeProvider.dart'; // Import du ThemeProvider
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: MyApp(),
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
-      child: Builder(
-        builder: (context) {
-          final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
-
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: isDarkTheme ? ThemeData.dark() : ThemeData.light(),
-            home: ToDoScreen(),
-          );
-        },
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.isDarkTheme ? ThemeData.dark() : ThemeData.light(),
+          home: ToDoScreen(), // Remplace par ton widget home
+        );
+      },
     );
   }
 }
+
 
 class ToDoScreen extends StatefulWidget {
   @override
@@ -107,7 +109,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Récupère le thème actuel
     final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
 
     return Scaffold(
@@ -154,7 +155,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             child: Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
-              color: isDarkTheme ? Colors.grey[800] : Colors.grey[200], // Gris plus clair en thème clair
+              color: isDarkTheme ? Colors.grey[800] : Colors.grey[200],
               child: ListView.builder(
                 itemCount: taskList.length,
                 itemBuilder: (context, index) {
@@ -188,7 +189,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                         ),
                       ),
                       Divider(
-                        color: isDarkTheme ? Colors.white30 : Colors.black38, // Ligne de séparation
+                        color: isDarkTheme ? Colors.white30 : Colors.black38,
                       ),
                     ],
                   );

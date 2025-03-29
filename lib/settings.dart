@@ -31,15 +31,29 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _saveSettings() async {
+    // Sauvegarde des paramètres dans la base de données
     await SettingsDatabase.instance.saveSettings(isDarkTheme, language, notificationsEnabled);
+
+    // Si le thème a changé, applique le changement
+    bool currentTheme = Provider.of<ThemeProvider>(context, listen: false).isDarkTheme;
+    if (currentTheme != isDarkTheme) {
+      // Applique uniquement si le thème change
+      Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+    }
+
+    // Affichage des paramètres pour vérification
     print("Paramètres enregistrés :");
     print("Thème sombre: $isDarkTheme");
     print("Langue: $language");
     print("Notifications activées: $notificationsEnabled");
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
+
     return Scaffold(
       backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
@@ -72,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Thème sombre:", style: TextStyle(fontSize: 16)),
+        Text("Thème sombre:", style: TextStyle(fontSize: 16, color: isDarkTheme ? Colors.white : Colors.black)),
         Switch(
           value: isDarkTheme,
           onChanged: (value) {
@@ -93,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Langue:"),
+        Text("Langue:", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
         Row(
           children: [
             Radio<String>(
@@ -106,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Français"),
+            Text("Français", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
             Radio<String>(
               value: "Anglais",
               groupValue: language,
@@ -117,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Anglais"),
+            Text("Anglais", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
           ],
         ),
       ],
@@ -128,7 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Notifications:"),
+        Text("Notifications:", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
         Checkbox(
           value: notificationsEnabled,
           onChanged: (value) {
