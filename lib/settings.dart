@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/SettingsDatabase.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -6,33 +7,39 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool isDarkTheme = false; // État du thème sombre
-  String language = "Français"; // Langue par défaut
-  bool notificationsEnabled = false; // Notifications
+  bool isDarkTheme = false;
+  String language = "Français";
+  bool notificationsEnabled = false;
 
-  void _toggleTheme() {
-    setState(() {
-      isDarkTheme = !isDarkTheme;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
   }
 
-  void _setLanguage(String? selectedLanguage) {
-    if (selectedLanguage != null) {
+  Future<void> _loadSettings() async {
+    final settings = await SettingsDatabase.instance.loadSettings();
+    if (settings != null) {
       setState(() {
-        language = selectedLanguage;
-        print("Langue sélectionnée : $language"); // Debug print pour vérifier
+        isDarkTheme = settings['isDarkTheme'] == 1;
+        language = settings['language'];
+        notificationsEnabled = settings['notificationsEnabled'] == 1;
       });
     }
   }
 
-  void _toggleNotifications(bool? value) {
-    setState(() {
-      notificationsEnabled = value ?? false;
-    });
+  Future<void> _saveSettings() async {
+    await SettingsDatabase.instance.saveSettings(isDarkTheme, language, notificationsEnabled);
+    print("Paramètres enregistrés :");
+    print("Thème sombre: $isDarkTheme");
+    print("Langue: $language");
+    print("Notifications activées: $notificationsEnabled");
   }
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = isDarkTheme ? Colors.white : Colors.black;
+
     return Scaffold(
       backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
@@ -45,86 +52,90 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              color: isDarkTheme ? Colors.grey : Colors.grey[300],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Thème Brice:",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Switch(
-                    value: isDarkTheme,
-                    onChanged: (value) => _toggleTheme(),
-                    activeColor: Colors.purple,
-                  ),
-                ],
-              ),
-            ),
+            _buildThemeToggle(textColor),
             SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(10),
-              color: isDarkTheme ? Colors.grey : Colors.grey[300],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Langage:", style: TextStyle(color: Colors.white, fontSize: 16)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        children: [
-                          Radio<String?>(
-                            value: "Français",
-                            groupValue: language, // Vérifie que le groupValue reflète correctement la variable "language"
-                            onChanged: _setLanguage,
-                            activeColor: Colors.purple,
-                          ),
-                          Text("Français", style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Radio<String?>(
-                            value: "Anglais",
-                            groupValue: language,
-                            onChanged: _setLanguage,
-                            activeColor: Colors.purple,
-                          ),
-                          Text("Anglais", style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            _buildLanguageSelector(textColor),
             SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(10),
-              color: isDarkTheme ? Colors.grey : Colors.grey[300],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Notifications:", style: TextStyle(color: Colors.white, fontSize: 16)),
-                  Checkbox(
-                    value: notificationsEnabled,
-                    onChanged: _toggleNotifications,
-                    activeColor: Colors.purple,
-                  ),
-                ],
-              ),
-            ),
+            _buildNotificationsToggle(textColor),
             SizedBox(height: 20),
-            Text(
-              "Langue actuelle : $language", // Affiche la langue sélectionnée
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            ElevatedButton(
+              onPressed: _saveSettings,
+              child: Text("Enregistrer"),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildThemeToggle(Color textColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Thème sombre:", style: TextStyle(fontSize: 16, color: textColor)),
+        Switch(
+          value: isDarkTheme,
+          onChanged: (value) {
+            setState(() {
+              isDarkTheme = value;
+            });
+          },
+          activeColor: Colors.purple,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSelector(Color textColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Langue:", style: TextStyle(color: textColor)),
+        Row(
+          children: [
+            Radio<String>(
+              value: "Français",
+              groupValue: language,
+              onChanged: (value) {
+                setState(() {
+                  language = value!;
+                });
+              },
+              activeColor: Colors.purple,
+            ),
+            Text("Français", style: TextStyle(color: textColor)),
+            Radio<String>(
+              value: "Anglais",
+              groupValue: language,
+              onChanged: (value) {
+                setState(() {
+                  language = value!;
+                });
+              },
+              activeColor: Colors.purple,
+            ),
+            Text("Anglais", style: TextStyle(color: textColor)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationsToggle(Color textColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Notifications:", style: TextStyle(color: textColor)),
+        Checkbox(
+          value: notificationsEnabled,
+          onChanged: (value) {
+            setState(() {
+              notificationsEnabled = value!;
+            });
+          },
+          activeColor: Colors.purple,
+        ),
+      ],
     );
   }
 }

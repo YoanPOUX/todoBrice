@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/settings.dart';
-import 'package:todo_list/editTasks.dart';
-
+import 'package:todo_list/settings.dart'; // Import de SettingsPage
 
 void main() {
   runApp(MyApp());
@@ -95,10 +93,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
     });
   }
 
-  void _openSettings() {
-    print("Navigate to Settings page"); // Future implementation: Navigate to settings.dart
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +101,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
         title: Text('ToDoBrice', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white), // Set the burger icon color to white
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: ListView(
@@ -128,7 +122,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
                   MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
               },
-
             ),
           ],
         ),
@@ -159,12 +152,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => EditTasksPage(index)),
-                            );
-                          }
+                          onPressed: () => _editTask(index),
                         ),
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
