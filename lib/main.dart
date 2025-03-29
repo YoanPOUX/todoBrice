@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/settings.dart'; // Import de SettingsPage
 import 'ThemeProvider.dart'; // Import du ThemeProvider
+import 'package:todo_list/services/TaskDatabase.dart'; // Import de TaskDatabase
 
 void main() {
   runApp(
@@ -11,7 +12,6 @@ void main() {
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class ToDoScreen extends StatefulWidget {
   @override
@@ -53,22 +52,28 @@ class _ToDoScreenState extends State<ToDoScreen> {
     }
   }
 
-  void _addTask() {
+  void _addTask() async {
     if (_taskController.text.isNotEmpty && selectedDate != null) {
+      // Crée un objet DateTime avec la date et l'heure actuelles
+      DateTime taskDateTime = DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day);
+
+      // Ajoute la tâche dans la base de données
+      await TaskDatabase.instance.addTask(_taskController.text, taskDateTime);
+
+      // Récupère toutes les tâches depuis la base de données après l'ajout
+      List<Map<String, dynamic>> tasks = await TaskDatabase.instance.getAllTasks();
+
       setState(() {
-        taskList.add({
-          "task": _taskController.text,
-          "date": selectedDate!,
-        });
-        _taskController.clear();
-        selectedDate = null;
+        taskList = tasks; // Met à jour la liste des tâches
       });
+
+      _taskController.clear();
+      selectedDate = null;
     }
   }
 
   void _editTask(int index) {
-    TextEditingController editController =
-    TextEditingController(text: taskList[index]["task"]);
+    TextEditingController editController = TextEditingController(text: taskList[index]["task"]);
 
     showDialog(
       context: context,
@@ -88,10 +93,22 @@ class _ToDoScreenState extends State<ToDoScreen> {
             ),
             TextButton(
               child: Text("Save"),
-              onPressed: () {
+              onPressed: () async {
+                // Passe également la date dans la méthode updateTask si nécessaire
+                DateTime taskDateTime = DateTime(taskList[index]["date"].year,
+                    taskList[index]["date"].month, taskList[index]["date"].day);
+
+                // Met à jour la tâche en passant l'ID, le texte et la date
+                await TaskDatabase.instance.updateTask(
+                  taskList[index]["id"],
+                  editController.text,
+                  taskDateTime, // Ajouter la date si nécessaire
+                );
+
                 setState(() {
                   taskList[index]["task"] = editController.text;
                 });
+
                 Navigator.of(context).pop();
               },
             ),
@@ -109,8 +126,24 @@ class _ToDoScreenState extends State<ToDoScreen> {
         duration: Duration(seconds: 3),
       ),
     );
+
+    TaskDatabase.instance.deleteTask(taskList[index]["id"]);
+
     setState(() {
       taskList.removeAt(index);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks(); // Charge les tâches au démarrage
+  }
+
+  Future<void> _loadTasks() async {
+    List<Map<String, dynamic>> tasks = await TaskDatabase.instance.getAllTasks();
+    setState(() {
+      taskList = tasks;
     });
   }
 
@@ -151,7 +184,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
               title: Text('Calendrier'),
               onTap: () {
                 // Ajoute une page de calendrier plus tard
-                // Par exemple : Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalendarPage()));
               },
             ),
             Spacer(), // Cela pousse "Settings" en bas
@@ -167,7 +199,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
           ],
         ),
       ),
-
       body: Column(
         children: [
           ToDoHeader(
