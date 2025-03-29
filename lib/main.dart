@@ -138,6 +138,24 @@ class _ToDoScreenState extends State<ToDoScreen> {
               ),
             ),
             ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Accueil'),
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => ToDoScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today),
+              title: Text('Calendrier'),
+              onTap: () {
+                // Ajoute une page de calendrier plus tard
+                // Par exemple : Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalendarPage()));
+              },
+            ),
+            Spacer(), // Cela pousse "Settings" en bas
+            ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () {
@@ -149,6 +167,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
           ],
         ),
       ),
+
       body: Column(
         children: [
           ToDoHeader(
