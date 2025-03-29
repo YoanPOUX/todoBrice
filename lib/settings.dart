@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/SettingsDatabase.dart';
+import 'ThemeProvider.dart'; // Import du ThemeProvider
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -38,8 +40,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = isDarkTheme ? Colors.white : Colors.black;
-
     return Scaffold(
       backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
@@ -52,11 +52,11 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildThemeToggle(textColor),
+            _buildThemeToggle(),
             SizedBox(height: 20),
-            _buildLanguageSelector(textColor),
+            _buildLanguageSelector(),
             SizedBox(height: 20),
-            _buildNotificationsToggle(textColor),
+            _buildNotificationsToggle(),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveSettings,
@@ -68,17 +68,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildThemeToggle(Color textColor) {
+  Widget _buildThemeToggle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Thème sombre:", style: TextStyle(fontSize: 16, color: textColor)),
+        Text("Thème sombre:", style: TextStyle(fontSize: 16)),
         Switch(
           value: isDarkTheme,
           onChanged: (value) {
             setState(() {
               isDarkTheme = value;
             });
+
+            // Mettre à jour le provider pour changer le thème globalement
+            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
           },
           activeColor: Colors.purple,
         ),
@@ -86,11 +89,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildLanguageSelector(Color textColor) {
+  Widget _buildLanguageSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Langue:", style: TextStyle(color: textColor)),
+        Text("Langue:"),
         Row(
           children: [
             Radio<String>(
@@ -103,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Français", style: TextStyle(color: textColor)),
+            Text("Français"),
             Radio<String>(
               value: "Anglais",
               groupValue: language,
@@ -114,18 +117,18 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Anglais", style: TextStyle(color: textColor)),
+            Text("Anglais"),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildNotificationsToggle(Color textColor) {
+  Widget _buildNotificationsToggle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Notifications:", style: TextStyle(color: textColor)),
+        Text("Notifications:"),
         Checkbox(
           value: notificationsEnabled,
           onChanged: (value) {

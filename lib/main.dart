@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_list/settings.dart'; // Import de SettingsPage
+import 'ThemeProvider.dart'; // Import du ThemeProvider
 
 void main() {
   runApp(MyApp());
@@ -8,9 +10,19 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ToDoScreen(),
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Builder(
+        builder: (context) {
+          final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: isDarkTheme ? ThemeData.dark() : ThemeData.light(),
+            home: ToDoScreen(),
+          );
+        },
+      ),
     );
   }
 }
@@ -95,8 +107,11 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Récupère le thème actuel
+    final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         title: Text('ToDoBrice', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
@@ -133,33 +148,49 @@ class _ToDoScreenState extends State<ToDoScreen> {
             selectDate: () => _selectDate(context),
             addTask: _addTask,
             selectedDate: selectedDate,
+            isDarkTheme: isDarkTheme,
           ),
           Expanded(
             child: Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
-              color: Colors.white,
+              color: isDarkTheme ? Colors.grey[800] : Colors.grey[200], // Gris plus clair en thème clair
               child: ListView.builder(
                 itemCount: taskList.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(taskList[index]["task"]),
-                    subtitle: Text(
-                      "Due: ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _editTask(index),
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          taskList[index]["task"],
+                          style: TextStyle(
+                            color: isDarkTheme ? Colors.white : Colors.black,
+                          ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteTask(index),
+                        subtitle: Text(
+                          "Due: ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
+                          style: TextStyle(
+                            color: isDarkTheme ? Colors.white : Colors.black,
+                          ),
                         ),
-                      ],
-                    ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () => _editTask(index),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _deleteTask(index),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        color: isDarkTheme ? Colors.white30 : Colors.black38, // Ligne de séparation
+                      ),
+                    ],
                   );
                 },
               ),
@@ -176,24 +207,29 @@ class ToDoHeader extends StatelessWidget {
   final VoidCallback selectDate;
   final VoidCallback addTask;
   final DateTime? selectedDate;
+  final bool isDarkTheme;
 
   ToDoHeader({
     required this.taskController,
     required this.selectDate,
     required this.addTask,
     required this.selectedDate,
+    required this.isDarkTheme,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: isDarkTheme ? Colors.grey[800] : Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       child: Column(
         children: [
           Text(
             "Add a task:",
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: TextStyle(
+              fontSize: 16,
+              color: isDarkTheme ? Colors.white : Colors.black,
+            ),
           ),
           SizedBox(height: 5),
           Row(
@@ -207,11 +243,14 @@ class ToDoHeader extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    hintStyle: TextStyle(
+                      color: isDarkTheme ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.calendar_today, size: 30, color: Colors.black),
+                icon: Icon(Icons.calendar_today, size: 30, color: isDarkTheme ? Colors.white : Colors.black),
                 onPressed: selectDate,
               ),
             ],
@@ -219,7 +258,7 @@ class ToDoHeader extends StatelessWidget {
           if (selectedDate != null)
             Text(
               "Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(fontSize: 14, color: isDarkTheme ? Colors.white : Colors.grey),
             ),
           IconButton(
             icon: Icon(Icons.add_circle, size: 40, color: Colors.purple),
