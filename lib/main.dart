@@ -102,6 +102,13 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 
   void _deleteTask(int index) {
+    // Affichage du SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Tâche supprimée'),
+        duration: Duration(seconds: 3),
+      ),
+    );
     setState(() {
       taskList.removeAt(index);
     });
