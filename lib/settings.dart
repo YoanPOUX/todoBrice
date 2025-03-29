@@ -9,7 +9,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool isDarkTheme = false;
+  bool isDarkTheme = false; // Valeur locale pour le thème
+  bool isDarkThemeApplied = false; // Valeur temporaire pour l'application du thème
   String language = "Français";
   bool notificationsEnabled = false;
 
@@ -19,6 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _loadSettings();
   }
 
+  // Charger les paramètres enregistrés depuis la base de données
   Future<void> _loadSettings() async {
     final settings = await SettingsDatabase.instance.loadSettings();
     if (settings != null) {
@@ -26,36 +28,35 @@ class _SettingsPageState extends State<SettingsPage> {
         isDarkTheme = settings['isDarkTheme'] == 1;
         language = settings['language'];
         notificationsEnabled = settings['notificationsEnabled'] == 1;
+        isDarkThemeApplied = settings['isDarkTheme'] == 1; // Appliquer le thème initial
       });
     }
   }
 
+  // Enregistrer les paramètres dans la base de données et mettre à jour le thème
   Future<void> _saveSettings() async {
-    // Sauvegarde des paramètres dans la base de données
+    // Sauvegarder dans la base de données
     await SettingsDatabase.instance.saveSettings(isDarkTheme, language, notificationsEnabled);
 
-    // Si le thème a changé, applique le changement
-    bool currentTheme = Provider.of<ThemeProvider>(context, listen: false).isDarkTheme;
-    if (currentTheme != isDarkTheme) {
-      // Applique uniquement si le thème change
-      Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-    }
+    // Mettre à jour le thème globalement en fonction de la valeur de isDarkTheme
+    Provider.of<ThemeProvider>(context, listen: false).updateTheme(isDarkTheme);
 
-    // Affichage des paramètres pour vérification
+    setState(() {
+      // Appliquer le thème définitivement après l'enregistrement
+      isDarkThemeApplied = isDarkTheme;
+    });
+
+    // Afficher les paramètres pour débogage
     print("Paramètres enregistrés :");
     print("Thème sombre: $isDarkTheme");
     print("Langue: $language");
     print("Notifications activées: $notificationsEnabled");
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Provider.of<ThemeProvider>(context).isDarkTheme;
-
     return Scaffold(
-      backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
+      backgroundColor: isDarkThemeApplied ? Colors.grey[900] : Colors.white, // Utiliser isDarkThemeApplied pour le fond
       appBar: AppBar(
         title: Text('Settings', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
@@ -73,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
             _buildNotificationsToggle(),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveSettings,
+              onPressed: _saveSettings, // Applique le thème uniquement après l'enregistrement
               child: Text("Enregistrer"),
             ),
           ],
@@ -82,20 +83,18 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  // Switch pour changer le thème sombre
   Widget _buildThemeToggle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Thème sombre:", style: TextStyle(fontSize: 16, color: isDarkTheme ? Colors.white : Colors.black)),
+        Text("Thème sombre:", style: TextStyle(fontSize: 16)),
         Switch(
-          value: isDarkTheme,
+          value: isDarkTheme, // Change la valeur locale
           onChanged: (value) {
             setState(() {
-              isDarkTheme = value;
+              isDarkTheme = value; // Modifie uniquement la valeur locale du thème
             });
-
-            // Mettre à jour le provider pour changer le thème globalement
-            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
           },
           activeColor: Colors.purple,
         ),
@@ -103,14 +102,15 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  // Sélecteur de langue
   Widget _buildLanguageSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Langue:", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
+        Text("Langue:"),
         Row(
           children: [
-            Radio<String>(
+            Radio<String>( // Langue Française
               value: "Français",
               groupValue: language,
               onChanged: (value) {
@@ -120,8 +120,8 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Français", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
-            Radio<String>(
+            Text("Français"),
+            Radio<String>( // Langue Anglaise
               value: "Anglais",
               groupValue: language,
               onChanged: (value) {
@@ -131,23 +131,24 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               activeColor: Colors.purple,
             ),
-            Text("Anglais", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
+            Text("Anglais"),
           ],
         ),
       ],
     );
   }
 
+  // Toggle pour activer/désactiver les notifications
   Widget _buildNotificationsToggle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Notifications:", style: TextStyle(color: isDarkTheme ? Colors.white : Colors.black)),
+        Text("Notifications:"),
         Checkbox(
           value: notificationsEnabled,
           onChanged: (value) {
             setState(() {
-              notificationsEnabled = value!;
+              notificationsEnabled = value!; // Modifier uniquement la valeur locale
             });
           },
           activeColor: Colors.purple,

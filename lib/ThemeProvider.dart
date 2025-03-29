@@ -18,6 +18,14 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Méthode pour mettre à jour le thème avec la valeur donnée
+  void updateTheme(bool isDark) async {
+    _isDarkTheme = isDark;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkTheme', _isDarkTheme);
+    notifyListeners();
+  }
+
   // Méthode pour changer le thème et enregistrer dans SharedPreferences
   void toggleTheme() async {
     final prefs = await SharedPreferences.getInstance();
