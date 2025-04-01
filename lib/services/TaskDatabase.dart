@@ -23,27 +23,28 @@ class TaskDatabase {
       onCreate: (db, version) async {
         // Créer la table des tâches lors de la création de la base
         await db.execute(''' 
-        CREATE TABLE tasks (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          task TEXT NOT NULL,
-          date TEXT
-        )
-      ''');
+    CREATE TABLE IF NOT EXISTS tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      task TEXT NOT NULL,
+      date TEXT
+    )
+    ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
-          // Si la version est inférieure à 2, recréer la table
+          // Si la version est inférieure à 2, vérifier la table et ajouter des colonnes si nécessaire
           await db.execute(''' 
-          CREATE TABLE tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            task TEXT NOT NULL,
-            date TEXT
-          )
-        ''');
+      CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        task TEXT NOT NULL,
+        date TEXT
+      )
+      ''');
         }
       },
     );
   }
+
 
 
   // Ajouter une tâche (stocke uniquement la date)

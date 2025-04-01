@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list/Calendrier.dart';
 import 'package:todo_list/settings.dart'; // Import de SettingsPage
 import 'ThemeProvider.dart'; // Import du ThemeProvider
 import 'package:todo_list/services/TaskDatabase.dart'; // Import de TaskDatabase
@@ -190,8 +191,9 @@ class _ToDoScreenState extends State<ToDoScreen> {
               leading: Icon(Icons.calendar_today),
               title: Text('Calendrier'),
               onTap: () {
-                // Ajoute une page de calendrier plus tard
-              },
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => PageCalendrier()),
+                );              },
             ),
             Spacer(), // Cela pousse "Settings" en bas
             ListTile(
