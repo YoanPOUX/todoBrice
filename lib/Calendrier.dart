@@ -43,7 +43,23 @@ class _PageCalendrierState extends State<PageCalendrier> {
     });
   }
 
-  // Sélecteur de mois
+  // Sélectionner le mois précédent
+  void _previousMonth() {
+    setState(() {
+      selectedDate = DateTime(selectedDate.year, selectedDate.month - 1);
+    });
+    _loadTasksForAllMonths(); // Recharger les tâches pour le mois précédent
+  }
+
+  // Sélectionner le mois suivant
+  void _nextMonth() {
+    setState(() {
+      selectedDate = DateTime(selectedDate.year, selectedDate.month + 1);
+    });
+    _loadTasksForAllMonths(); // Recharger les tâches pour le mois suivant
+  }
+
+  // Sélectionner un mois via un date picker
   void _selectMonth() async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -57,6 +73,7 @@ class _PageCalendrierState extends State<PageCalendrier> {
         selectedDate = DateTime(
             picked.year, picked.month); // Mettre à jour le mois sélectionné
       });
+      _loadTasksForAllMonths(); // Recharger les tâches après la sélection
     }
   }
 
@@ -74,14 +91,25 @@ class _PageCalendrierState extends State<PageCalendrier> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Sélecteur de mois
+              // Sélecteur de mois avec flèches pour changer de mois et icône calendrier
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Flèche gauche
+                  IconButton(
+                    icon: Icon(Icons.arrow_left),
+                    onPressed: _previousMonth, // Aller au mois précédent
+                  ),
                   Text(
                     DateFormat('MMMM yyyy').format(selectedDate),
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  // Flèche droite
+                  IconButton(
+                    icon: Icon(Icons.arrow_right),
+                    onPressed: _nextMonth, // Aller au mois suivant
+                  ),
+                  // Icône calendrier pour sélectionner un mois
                   IconButton(
                     icon: Icon(Icons.date_range),
                     onPressed: _selectMonth, // Ouvre le sélecteur de mois
@@ -90,38 +118,42 @@ class _PageCalendrierState extends State<PageCalendrier> {
               ),
               SizedBox(height: 20),
 
-              // Affichage des tâches par mois
+              // Affichage des tâches du mois sélectionné
               ListView.builder(
                 shrinkWrap: true, // Permet à la liste de ne pas occuper tout l'espace
                 itemCount: tasksByMonth.keys.length, // Nombre de mois dans tasksByMonth
                 itemBuilder: (context, index) {
                   DateTime month = tasksByMonth.keys.elementAt(index);
-                  List<String> tasks = tasksByMonth[month] ?? [];
-
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat('MMMM yyyy').format(month), // Affiche le mois
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 10),
-                          Column(
-                            children: tasks.map((task) {
-                              return ListTile(
-                                title: Text(task),
-                              );
-                            }).toList(),
-                          ),
-                        ],
+                  // Afficher les tâches uniquement pour le mois sélectionné
+                  if (month.month == selectedDate.month && month.year == selectedDate.year) {
+                    List<String> tasks = tasksByMonth[month] ?? [];
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              DateFormat('MMMM yyyy').format(month), // Affiche le mois
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 10),
+                            Column(
+                              children: tasks.map((task) {
+                                return ListTile(
+                                  title: Text(task),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return SizedBox(); // Ne rien afficher pour les autres mois
+                  }
                 },
               ),
             ],
