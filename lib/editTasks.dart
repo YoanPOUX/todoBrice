@@ -41,7 +41,7 @@ class _EditTasksState extends State<EditTasksPage> {
             Text("Details :", style: TextStyle(fontSize: 16, color: Colors.black),),
             TextFormField(initialValue: getDetails()),
             SizedBox(height:5),
-            Text("Date: ${getDate()!.day}/${getDate()!.month}/${getDate()!.year}", style: TextStyle(fontSize: 16, color: Colors.black),)
+          //  Text("Date: ${getDate()!.day}/${getDate()!.month}/${getDate()!.year}", style: TextStyle(fontSize: 16, color: Colors.black),)
           ]
         ),
       ),

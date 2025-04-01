@@ -19,44 +19,57 @@ class TaskDatabase {
 
     return await openDatabase(
       path,
-      version: 1, // Version initiale de la base de données
+      version: 2, // Mets à jour la version de la base de données ici
       onCreate: (db, version) async {
-        // Table pour les tâches
+        // Créer la table des tâches lors de la création de la base
         await db.execute(''' 
+        CREATE TABLE tasks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          task TEXT NOT NULL,
+          date TEXT
+        )
+      ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // Si la version est inférieure à 2, recréer la table
+          await db.execute(''' 
           CREATE TABLE tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             task TEXT NOT NULL,
-            date TEXT NOT NULL,
-            time TEXT NOT NULL
+            date TEXT
           )
         ''');
+        }
       },
     );
   }
 
-  // Ajouter une tâche
-  Future<void> addTask(String task, DateTime dateTime) async {
+
+  // Ajouter une tâche (stocke uniquement la date)
+  Future<void> addTask(String task, DateTime date) async {
     final db = await instance.database;
     await db.insert(
       'tasks',
       {
         'task': task,
-        'date': dateTime.toIso8601String().split('T')[0], // La date sans l'heure
-        'time': dateTime.toIso8601String().split('T')[1], // L'heure seule
+        'date': date.toIso8601String().split('T')[0],
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    print("Tâche ajoutée : $task - ${date.toIso8601String().split('T')[0]}");
   }
 
-  // Modifier une tâche
-  Future<void> updateTask(int id, String newTask, DateTime newDateTime) async {
+
+  // Modifier une tâche (mise à jour du texte et de la date)
+  Future<void> updateTask(int id, String newTask, DateTime newDate) async {
     final db = await instance.database;
     await db.update(
       'tasks',
       {
         'task': newTask,
-        'date': newDateTime.toIso8601String().split('T')[0],
-        'time': newDateTime.toIso8601String().split('T')[1],
+        'date': newDate.toIso8601String().split('T')[0],
       },
       where: 'id = ?',
       whereArgs: [id],
@@ -73,25 +86,57 @@ class TaskDatabase {
     );
   }
 
-  // Récupérer toutes les tâches
   Future<List<Map<String, dynamic>>> getAllTasks() async {
     final db = await instance.database;
     final List<Map<String, dynamic>> tasks = await db.query('tasks');
 
-    // Convertir les dates en DateTime
+    print("Données brutes de la BD : $tasks"); // Vérifie les données récupérées
+
     return tasks.map((task) {
-      DateTime taskDateTime = DateTime.parse('${task['date']} ${task['time']}');
+      String? dateString = task['date'];
+
+      // Vérifie que la date est bien au format attendu
+      DateTime? parsedDate;
+      try {
+        parsedDate = DateTime.parse(dateString!);
+      } catch (e) {
+        print("Erreur de parsing de la date : $dateString - Erreur : $e");
+      }
+
       return {
         'id': task['id'],
         'task': task['task'],
-        'date': taskDateTime, // DateTime reconstituée
+        'date': parsedDate, // Utilise null si la conversion échoue
       };
     }).toList();
   }
+
+
 
   // Fermer la base de données
   Future close() async {
     final db = await instance.database;
     db.close();
   }
+
+  Future<void> resetDatabase() async {
+    final db = await instance.database;
+    // Supprimer la table des tâches
+    await db.execute('DROP TABLE IF EXISTS tasks');
+    print("Table 'tasks' supprimée");
+
+    // Recréer la table
+    await db.execute(''' 
+    CREATE TABLE tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      task TEXT NOT NULL,
+      date TEXT
+    )
+  ''');
+    print("Table 'tasks' recréée !");
+  }
+
+
 }
+
+

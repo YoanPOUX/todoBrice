@@ -54,7 +54,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   void _addTask() async {
     if (_taskController.text.isNotEmpty && selectedDate != null) {
-      // Crée un objet DateTime avec la date et l'heure actuelles
+      // Crée un objet DateTime avec uniquement la date sélectionnée (sans heure)
       DateTime taskDateTime = DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day);
 
       // Ajoute la tâche dans la base de données
@@ -71,6 +71,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
       selectedDate = null;
     }
   }
+
 
   void _editTask(int index) {
     TextEditingController editController = TextEditingController(text: taskList[index]["task"]);
@@ -118,6 +119,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
     );
   }
 
+
   void _deleteTask(int index) {
     // Affichage du SnackBar
     ScaffoldMessenger.of(context).showSnackBar(
@@ -137,11 +139,16 @@ class _ToDoScreenState extends State<ToDoScreen> {
   @override
   void initState() {
     super.initState();
-    _loadTasks(); // Charge les tâches au démarrage
+    print("initState appelé !");
+    _loadTasks();
   }
+
 
   Future<void> _loadTasks() async {
     List<Map<String, dynamic>> tasks = await TaskDatabase.instance.getAllTasks();
+
+    print("Tâches récupérées : $tasks"); // Vérifie si des tâches sont bien récupérées
+
     setState(() {
       taskList = tasks;
     });
