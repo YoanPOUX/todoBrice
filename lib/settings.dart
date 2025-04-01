@@ -56,28 +56,65 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isDarkThemeApplied ? Colors.grey[900] : Colors.white, // Utiliser isDarkThemeApplied pour le fond
+      backgroundColor: isDarkThemeApplied ? Colors.grey[900] : Colors.white, // Fond adapté au thème
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: Colors.white)),
+        title: Text('Paramètres', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
-        elevation: 0,
+        elevation: 4, // Ajout d'une légère ombre pour plus de profondeur
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
+            _buildSectionTitle('Thème'),
             _buildThemeToggle(),
             SizedBox(height: 20),
+            _buildSectionTitle('Langue'),
             _buildLanguageSelector(),
             SizedBox(height: 20),
+            _buildSectionTitle('Notifications'),
             _buildNotificationsToggle(),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             ElevatedButton(
-              onPressed: _saveSettings, // Applique le thème uniquement après l'enregistrement
-              child: Text("Enregistrer"),
-            ),
+              onPressed: _saveSettings,
+              child: Text(
+                "Enregistrer",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white, // Couleur du texte en blanc
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple, // Couleur de fond principale
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30), // Bordures plus arrondies
+                ),
+                elevation: 10, // Ombrage plus marqué
+              ).copyWith(
+                shadowColor: MaterialStateProperty.all(Colors.purpleAccent.withOpacity(0.6)), // Ombre plus accentuée
+              ),
+            )
+
+
           ],
+        ),
+      ),
+    );
+  }
+
+  // Section titre
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: isDarkThemeApplied ? Colors.white : Colors.black,
         ),
       ),
     );
@@ -85,75 +122,80 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Switch pour changer le thème sombre
   Widget _buildThemeToggle() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Thème sombre:", style: TextStyle(fontSize: 16)),
-        Switch(
-          value: isDarkTheme, // Change la valeur locale
-          onChanged: (value) {
-            setState(() {
-              isDarkTheme = value; // Modifie uniquement la valeur locale du thème
-            });
-          },
-          activeColor: Colors.purple,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Activer le thème sombre", style: TextStyle(fontSize: 16)),
+          Switch(
+            value: isDarkTheme, // Change la valeur locale
+            onChanged: (value) {
+              setState(() {
+                isDarkTheme = value; // Modifie uniquement la valeur locale du thème
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+        ],
+      ),
     );
   }
 
   // Sélecteur de langue
   Widget _buildLanguageSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Langue:"),
-        Row(
-          children: [
-            Radio<String>( // Langue Française
-              value: "Français",
-              groupValue: language,
-              onChanged: (value) {
-                setState(() {
-                  language = value!;
-                });
-              },
-              activeColor: Colors.purple,
-            ),
-            Text("Français"),
-            Radio<String>( // Langue Anglaise
-              value: "Anglais",
-              groupValue: language,
-              onChanged: (value) {
-                setState(() {
-                  language = value!;
-                });
-              },
-              activeColor: Colors.purple,
-            ),
-            Text("Anglais"),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Radio<String>(
+            value: "Français",
+            groupValue: language,
+            onChanged: (value) {
+              setState(() {
+                language = value!;
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+          Text("Français"),
+          SizedBox(width: 20),
+          Radio<String>(
+            value: "Anglais",
+            groupValue: language,
+            onChanged: (value) {
+              setState(() {
+                language = value!;
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+          Text("Anglais"),
+        ],
+      ),
     );
   }
 
   // Toggle pour activer/désactiver les notifications
   Widget _buildNotificationsToggle() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Notifications:"),
-        Checkbox(
-          value: notificationsEnabled,
-          onChanged: (value) {
-            setState(() {
-              notificationsEnabled = value!; // Modifier uniquement la valeur locale
-            });
-          },
-          activeColor: Colors.purple,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Notifications", style: TextStyle(fontSize: 16)),
+          Checkbox(
+            value: notificationsEnabled,
+            onChanged: (value) {
+              setState(() {
+                notificationsEnabled = value!; // Modifier uniquement la valeur locale
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+        ],
+      ),
     );
   }
 }
