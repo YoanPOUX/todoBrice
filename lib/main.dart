@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/Calendrier.dart';
+import 'package:todo_list/Crédits.dart';
 import 'package:todo_list/settings.dart'; // Import de SettingsPage
 import 'ThemeProvider.dart'; // Import du ThemeProvider
 import 'package:todo_list/services/TaskDatabase.dart'; // Import de TaskDatabase
@@ -81,20 +82,20 @@ class _ToDoScreenState extends State<ToDoScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Edit Task"),
+          title: Text("Modifier la tâche"),
           content: TextField(
             controller: editController,
             decoration: InputDecoration(
-              hintText: "Update task label",
+              hintText: "Modifier le nom de la tâche",
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Annuler"),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text("Save"),
+              child: Text("Enregistrer"),
               onPressed: () async {
                 // Passe également la date dans la méthode updateTask si nécessaire
                 DateTime taskDateTime = DateTime(taskList[index]["date"].year,
@@ -174,7 +175,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             DrawerHeader(
               decoration: BoxDecoration(color: Colors.black),
               child: Text(
-                "ToDoBrice Menu",
+                "Menu ToDoBrice",
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
@@ -195,10 +196,19 @@ class _ToDoScreenState extends State<ToDoScreen> {
                   MaterialPageRoute(builder: (context) => PageCalendrier()),
                 );              },
             ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('Crédits'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => CreditsPage()),
+                );
+              },
+            ),
             Spacer(), // Cela pousse "Settings" en bas
             ListTile(
               leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              title: Text('Paramètres'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => SettingsPage()),
@@ -235,7 +245,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                           ),
                         ),
                         subtitle: Text(
-                          "Due: ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
+                          "À faire pour le ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
                           style: TextStyle(
                             color: isDarkTheme ? Colors.white : Colors.black,
                           ),
@@ -292,7 +302,7 @@ class ToDoHeader extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Add a task:",
+            "Ajouter une tâche :",
             style: TextStyle(
               fontSize: 16,
               color: isDarkTheme ? Colors.white : Colors.black,
@@ -305,7 +315,7 @@ class ToDoHeader extends StatelessWidget {
                 child: TextField(
                   controller: taskController,
                   decoration: InputDecoration(
-                    hintText: "Label",
+                    hintText: "Nom de la tâche",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -324,7 +334,7 @@ class ToDoHeader extends StatelessWidget {
           ),
           if (selectedDate != null)
             Text(
-              "Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+              "Date sélectionnée : ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
               style: TextStyle(fontSize: 14, color: isDarkTheme ? Colors.white : Colors.grey),
             ),
           IconButton(
