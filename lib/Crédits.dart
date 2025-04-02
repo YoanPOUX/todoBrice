@@ -87,7 +87,11 @@ class CreditsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(icon, size: 28, color: Theme.of(context).primaryColor),
+            Icon(
+              icon,
+              size: 28,
+              color: isDarkMode ? Colors.white : Theme.of(context).primaryColor, // Modification ici
+            ),
             SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -117,4 +121,5 @@ class CreditsPage extends StatelessWidget {
       ),
     );
   }
+
 }
