@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 class CreditsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Récupérer le thème actuel
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    List<Widget> creditCards = [
+      _buildCreditCard(context, Icons.code, "Développeurs", "Thomas Bourdinot, Yoan Poux-Borries"),
+      _buildCreditCard(context, Icons.brush, "Design UI/UX", "Thomas Bourdinot, Yoan Poux-Borries"),
+      _buildCreditCard(context, Icons.build, "Technologies utilisées", "Flutter, Dart, SQLite, Provider"),
+      _buildCreditCard(context, Icons.favorite, "Remerciements", "Merci à la communauté open-source et aux contributeurs de Flutter."),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -25,48 +32,21 @@ class CreditsPage extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
+          child: isPortrait
+              ? Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCreditCard(
-                context,
-                Icons.code,
-                "Développeurs",
-                "Thomas Bourdinot, Yoan Poux-Borries",
-              ),
-              _buildCreditCard(
-                context,
-                Icons.brush,
-                "Design UI/UX",
-                "Thomas Bourdinot, Yoan Poux-Borries",
-              ),
-              _buildCreditCard(
-                context,
-                Icons.build,
-                "Technologies utilisées",
-                "Flutter, Dart, SQLite, Provider",
-              ),
-              _buildCreditCard(
-                context,
-                Icons.favorite,
-                "Remerciements",
-                "Merci à la communauté open-source et aux contributeurs de Flutter.",
-              ),
+              ...creditCards,
               SizedBox(height: 30),
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.arrow_back),
-                label: Text("Retour"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
+              _buildBackButton(context),
             ],
+          )
+              : GridView.count(
+            crossAxisCount: 2, // 2 cartes par ligne
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 1.5, // Ajuste la taille des cartes
+            children: creditCards,
           ),
         ),
       ),
@@ -79,19 +59,13 @@ class CreditsPage extends StatelessWidget {
     return Card(
       color: isDarkMode ? Colors.grey[850] : Colors.white,
       elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: EdgeInsets.only(bottom: 15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      margin: EdgeInsets.all(5),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 28,
-              color: isDarkMode ? Colors.white : Theme.of(context).primaryColor, // Modification ici
-            ),
+            Icon(icon, size: 28, color: isDarkMode ? Colors.white : Theme.of(context).primaryColor),
             SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -99,19 +73,12 @@ class CreditsPage extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black),
                   ),
                   SizedBox(height: 4),
                   Text(
                     content,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.white70 : Colors.black87,
-                    ),
+                    style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white70 : Colors.black87),
                   ),
                 ],
               ),
@@ -122,4 +89,17 @@ class CreditsPage extends StatelessWidget {
     );
   }
 
+  Widget _buildBackButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () => Navigator.pop(context),
+      icon: Icon(Icons.arrow_back),
+      label: Text("Retour"),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+    );
+  }
 }
