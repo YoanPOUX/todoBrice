@@ -8,10 +8,10 @@ class CreditsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Crédits', style: TextStyle(color: Theme.of(context).primaryColorLight)),
+        title: Text('Crédits', style: TextStyle(color: Colors.white)),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColorLight),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: BoxDecoration(

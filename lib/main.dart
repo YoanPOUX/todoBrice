@@ -164,7 +164,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
       backgroundColor: isDarkTheme ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         title: Text('ToDoBrice', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
@@ -173,7 +173,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.black),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Text(
                 "Menu ToDoBrice",
                 style: TextStyle(color: Colors.white, fontSize: 24),
@@ -231,7 +231,10 @@ class _ToDoScreenState extends State<ToDoScreen> {
             child: Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
-              color: isDarkTheme ? Colors.grey[800] : Colors.grey[200],
+              decoration: BoxDecoration(
+                color: isDarkTheme ? Colors.grey[800] : Colors.grey[200],
+                borderRadius: BorderRadius.circular(10), // Ajout du border radius
+              ),
               child: ListView.builder(
                 itemCount: taskList.length,
                 itemBuilder: (context, index) {
@@ -338,7 +341,7 @@ class ToDoHeader extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: isDarkTheme ? Colors.white : Colors.grey),
             ),
           IconButton(
-            icon: Icon(Icons.add_circle, size: 40, color: Colors.purple),
+            icon: Icon(Icons.add_circle, size: 40, color: isDarkTheme ? Colors.white : Theme.of(context).primaryColor),
             onPressed: addTask,
           ),
         ],

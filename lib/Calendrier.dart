@@ -82,7 +82,7 @@ class _PageCalendrierState extends State<PageCalendrier> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendrier', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.white),
       ),

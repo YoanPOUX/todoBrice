@@ -59,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: isDarkThemeApplied ? Colors.grey[900] : Colors.white, // Fond adapté au thème
       appBar: AppBar(
         title: Text('Paramètres', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 4, // Ajout d'une légère ombre pour plus de profondeur
         iconTheme: IconThemeData(color: Colors.white),
       ),
