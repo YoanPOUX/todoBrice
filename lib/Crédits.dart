@@ -7,8 +7,8 @@ class CreditsPage extends StatelessWidget {
     bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     List<Widget> creditCards = [
-      _buildCreditCard(context, Icons.code, "Développeurs", "Thomas Bourdinot, Yoan Poux-Borries"),
-      _buildCreditCard(context, Icons.brush, "Design UI/UX", "Thomas Bourdinot, Yoan Poux-Borries"),
+      _buildCreditCard(context, Icons.code, "Développeurs", "Thomas Bourdinot, Yoan Poux--Bories"),
+      _buildCreditCard(context, Icons.brush, "Design UI/UX", "Thomas Bourdinot, Yoan Poux--Bories"),
       _buildCreditCard(context, Icons.build, "Technologies utilisées", "Flutter, Dart, SQLite, Provider"),
       _buildCreditCard(context, Icons.favorite, "Remerciements", "Merci à la communauté open-source et aux contributeurs de Flutter."),
     ];
