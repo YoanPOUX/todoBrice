@@ -1,0 +1,21 @@
+{
+
+  "textOne": "Paramètres",
+  "textTwo": "Thème",
+  "textThree": "Activer le thème sombre",
+  "textFour" : "Langue",
+  "textFive" : "Français",
+  "textSix" : "Anglais",
+  "textSeven" : "Notifications",
+  "textEight" : "Enregistrer",
+
+  "textAjTache": "Ajouter une tâche :",
+  "textNomTache" : "Nom de la tâche",
+  "textDate" : "A faire pour le ",
+  "textModifier" : "Modifier la tâche",
+  "textAnnuler" : "Annuler",
+  "textEnregistrer" : "Enregistrer",
+  "textSupprimer" : "Tâche supprimée",
+  "textSelection" : "Date sélectionnée : "
+
+}

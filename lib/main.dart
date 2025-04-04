@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/Calendrier.dart';
 import 'package:todo_list/Crédits.dart';
 import 'package:todo_list/settings.dart'; // Import de SettingsPage
 import 'ThemeProvider.dart'; // Import du ThemeProvider
 import 'package:todo_list/services/TaskDatabase.dart'; // Import de TaskDatabase
+import 'LanguageProvider.dart';
+import 'app_locale.dart';
+import '';
+
 
 void main() {
+  final FlutterLocalization localization = FlutterLocalization.instance;
+
+  localization.init(
+    mapLocales: [
+      const MapLocale('en', AppLocale.EN),
+      const MapLocale('fr', AppLocale.FR),
+    ],
+    initLanguageCode: 'fr', // ou récupéré via SharedPreferences
+  );
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider(localization)),
+      ],
       child: MyApp(),
     ),
   );
@@ -19,16 +37,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: themeProvider.isDarkTheme ? ThemeData.dark() : ThemeData.light(),
-          home: ToDoScreen(), // Remplace par ton widget home
+      builder: (context, themeProvider, _) {
+        return Consumer<LanguageProvider>(
+          builder: (context, languageProvider, _) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: themeProvider.isDarkTheme
+                  ? ThemeData.dark()
+                  : ThemeData.light(),
+              locale: languageProvider.localization.currentLocale,
+              supportedLocales: languageProvider.localization.supportedLocales,
+              localizationsDelegates: languageProvider.localization.localizationsDelegates,
+              home: ToDoScreen(), // Remplace par ton widget home
+            );
+          },
         );
       },
     );
   }
 }
+
 
 class ToDoScreen extends StatefulWidget {
   @override
@@ -305,7 +333,7 @@ class ToDoHeader extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Ajouter une tâche :",
+            AppLocale.textAjTache.getString(context),
             style: TextStyle(
               fontSize: 16,
               color: isDarkTheme ? Colors.white : Colors.black,
@@ -318,7 +346,7 @@ class ToDoHeader extends StatelessWidget {
                 child: TextField(
                   controller: taskController,
                   decoration: InputDecoration(
-                    hintText: "Nom de la tâche",
+                    hintText: AppLocale.textNomTache.getString(context),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

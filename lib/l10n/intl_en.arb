@@ -1,0 +1,20 @@
+{
+  "textOne": "Settings",
+  "textTwo": "Theme",
+  "textThree": "Set dark mode",
+  "textFour" : "Language",
+  "textFive" : "French",
+  "textSix" : "English",
+  "textSeven" : "Notifications",
+  "textEight" : "Save",
+
+  "textAjTache": "Add a task :",
+  "textNomTache" : "Task name",
+  "textDate" : "To do for the",
+  "textModifier" : "Edit task",
+  "textAnnuler" : "Cancel",
+  "textEnregistrer" : "Save",
+  "textSupprimer" : "DeleteTask",
+  "textSelection" : "Selected date : "
+
+}

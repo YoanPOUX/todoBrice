@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/SettingsDatabase.dart';
+import 'LanguageProvider.dart';
 import 'ThemeProvider.dart'; // Import du ThemeProvider
+import 'package:flutter_localization/flutter_localization.dart';
+
+import 'app_locale.dart';
+
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -45,6 +50,8 @@ class _SettingsPageState extends State<SettingsPage> {
       // Appliquer le thème définitivement après l'enregistrement
       isDarkThemeApplied = isDarkTheme;
     });
+    Provider.of<LanguageProvider>(context, listen: false).changeLanguage(language);
+
 
     // Afficher les paramètres pour débogage
     print("Paramètres enregistrés :");
@@ -58,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: isDarkThemeApplied ? Colors.grey[900] : Colors.white, // Fond adapté au thème
       appBar: AppBar(
-        title: Text('Paramètres', style: TextStyle(color: Colors.white)),
+        title: Text(AppLocale.textOne.getString(context), style: TextStyle(color: Colors.white)),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 4, // Ajout d'une légère ombre pour plus de profondeur
         iconTheme: IconThemeData(color: Colors.white),
@@ -67,10 +74,10 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            _buildSectionTitle('Thème'),
+            _buildSectionTitle(AppLocale.textTwo.getString(context)),
             _buildThemeToggle(),
             SizedBox(height: 20),
-            _buildSectionTitle('Langue'),
+            _buildSectionTitle(AppLocale.textFour.getString(context)),
             _buildLanguageSelector(),
             SizedBox(height: 20),
             _buildSectionTitle('Notifications'),
@@ -79,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton(
               onPressed: _saveSettings,
               child: Text(
-                "Enregistrer",
+                AppLocale.textEight.getString(context),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -127,7 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Activer le thème sombre", style: TextStyle(fontSize: 16)),
+          Text(AppLocale.textThree.getString(context), style: TextStyle(fontSize: 16)),
           Switch(
             value: isDarkTheme, // Change la valeur locale
             onChanged: (value) {
@@ -159,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             activeColor: Colors.purple,
           ),
-          Text("Français"),
+          Text(AppLocale.textFive.getString(context)),
           SizedBox(width: 20),
           Radio<String>(
             value: "Anglais",
@@ -171,7 +178,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             activeColor: Colors.purple,
           ),
-          Text("Anglais"),
+          Text(AppLocale.textSix.getString(context)),
         ],
       ),
     );
@@ -184,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Notifications", style: TextStyle(fontSize: 16)),
+          Text(AppLocale.textSix.getString(context), style: TextStyle(fontSize: 16)),
           Checkbox(
             value: notificationsEnabled,
             onChanged: (value) {
