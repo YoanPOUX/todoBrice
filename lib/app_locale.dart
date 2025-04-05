@@ -18,6 +18,20 @@ class AppLocale {
   static const String textSupprimer = "textSupprimer";
   static const String textSelection = "textSelection";
 
+  static const String textCredits = "textCredits";
+  static const String textDev = "textDev";
+  static const String textDesign = "textDesign";
+  static const String textTechno = "textTechno";
+  static const String textRemerciements = "textRemerciements";
+  static const String textRetour = "textRetour";
+  static const String textDesRemerciements = "textDesRemerciements";
+
+  static const String textMenu = "textMenu";
+  static const String textAccueil = "textAccueil";
+  static const String textCalendrier = "textCalendrier";
+
+
+
   static const Map<String, dynamic> EN = {
     textOne: "Settings",
     textTwo: "Theme",
@@ -35,7 +49,19 @@ class AppLocale {
     textAnnuler : "Cancel",
     textEnregistrer : "Save",
     textSupprimer : "DeleteTask",
-    textSelection : "Selected date : "
+    textSelection : "Selected date : ",
+    textMenu : "ToDoBrice Menu",
+    textAccueil : "Home",
+    textCalendrier : "Calendar",
+
+    textCredits : "Credits",
+    textDev : "Developers",
+    textDesign : "Design UI/UX",
+    textTechno : "Technologies used",
+    textRemerciements : "Thanks",
+    textRetour : "Back",
+
+    textDesRemerciements : "Thank you to the open-source community and Flutter contributors."
   };
 
   static const Map<String, dynamic> FR = {
@@ -55,7 +81,21 @@ class AppLocale {
     textAnnuler : "Annuler",
     textEnregistrer : "Enregistrer",
     textSupprimer : "Tâche supprimée",
-    textSelection : "Date sélectionnée : "
+    textSelection : "Date sélectionnée : ",
+    textMenu : "Menu ToDoBrice",
+    textAccueil : "Accueil",
+    textCalendrier : "Calendrier",
 
-  };
+    textCredits : "Crédits",
+    textDev : "Développeurs",
+    textDesign : "Design UI/UX",
+    textTechno : "Technologies utilisées",
+    textRemerciements : "Remerciements",
+    textRetour : "Retour",
+
+    textDesRemerciements : "Merci à la communauté open-source et aux contributeurs de Flutter."
+
+
+
+};
 }

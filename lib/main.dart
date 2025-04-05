@@ -119,11 +119,11 @@ class _ToDoScreenState extends State<ToDoScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Annuler"),
+              child: Text(AppLocale.textAnnuler.getString(context)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text("Enregistrer"),
+              child: Text(AppLocale.textEnregistrer.getString(context)),
               onPressed: () async {
                 // Passe également la date dans la méthode updateTask si nécessaire
                 DateTime taskDateTime = DateTime(taskList[index]["date"].year,
@@ -203,13 +203,13 @@ class _ToDoScreenState extends State<ToDoScreen> {
             DrawerHeader(
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Text(
-                "Menu ToDoBrice",
+                AppLocale.textMenu.getString(context),
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             ListTile(
               leading: Icon(Icons.home),
-              title: Text('Accueil'),
+              title: Text(AppLocale.textAccueil.getString(context)),
               onTap: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => ToDoScreen()),
@@ -218,7 +218,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             ),
             ListTile(
               leading: Icon(Icons.calendar_today),
-              title: Text('Calendrier'),
+              title: Text(AppLocale.textCalendrier.getString(context)),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => PageCalendrier()),
@@ -226,7 +226,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             ),
             ListTile(
               leading: Icon(Icons.info),
-              title: Text('Crédits'),
+              title: Text(AppLocale.textCredits.getString(context)),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => CreditsPage()),
@@ -236,7 +236,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             Spacer(), // Cela pousse "Settings" en bas
             ListTile(
               leading: Icon(Icons.settings),
-              title: Text('Paramètres'),
+              title: Text(AppLocale.textOne.getString(context)),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => SettingsPage()),
@@ -276,7 +276,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                           ),
                         ),
                         subtitle: Text(
-                          "À faire pour le ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}",
+                          '${AppLocale.textDate.getString(context)} ${taskList[index]["date"].day}/${taskList[index]["date"].month}/${taskList[index]["date"].year}',
                           style: TextStyle(
                             color: isDarkTheme ? Colors.white : Colors.black,
                           ),

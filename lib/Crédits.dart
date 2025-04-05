@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'LanguageProvider.dart';
+import 'app_locale.dart';
 
 class CreditsPage extends StatelessWidget {
   @override
@@ -7,15 +10,15 @@ class CreditsPage extends StatelessWidget {
     bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     List<Widget> creditCards = [
-      _buildCreditCard(context, Icons.code, "Développeurs", "Thomas Bourdinot, Yoan Poux--Bories"),
-      _buildCreditCard(context, Icons.brush, "Design UI/UX", "Thomas Bourdinot, Yoan Poux--Bories"),
-      _buildCreditCard(context, Icons.build, "Technologies utilisées", "Flutter, Dart, SQLite, Provider"),
-      _buildCreditCard(context, Icons.favorite, "Remerciements", "Merci à la communauté open-source et aux contributeurs de Flutter."),
+      _buildCreditCard(context, Icons.code, AppLocale.textDev.getString(context), "Thomas Bourdinot, Yoan Poux--Bories"),
+      _buildCreditCard(context, Icons.brush, AppLocale.textDesign.getString(context), "Thomas Bourdinot, Yoan Poux--Bories"),
+      _buildCreditCard(context, Icons.build, AppLocale.textTechno.getString(context), "Flutter, Dart, SQLite, Provider"),
+      _buildCreditCard(context, Icons.favorite, AppLocale.textRemerciements.getString(context), AppLocale.textDesRemerciements.getString(context)),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Crédits', style: TextStyle(color: Colors.white)),
+        title: Text(AppLocale.textCredits.getString(context), style: TextStyle(color: Colors.white)),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -93,7 +96,7 @@ class CreditsPage extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: () => Navigator.pop(context),
       icon: Icon(Icons.arrow_back),
-      label: Text("Retour"),
+      label: Text(AppLocale.textRetour.getString(context)),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,

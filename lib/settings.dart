@@ -191,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(AppLocale.textSix.getString(context), style: TextStyle(fontSize: 16)),
+          Text(AppLocale.textSeven.getString(context), style: TextStyle(fontSize: 16)),
           Checkbox(
             value: notificationsEnabled,
             onChanged: (value) {

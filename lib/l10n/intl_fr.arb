@@ -16,6 +16,19 @@
   "textAnnuler" : "Annuler",
   "textEnregistrer" : "Enregistrer",
   "textSupprimer" : "Tâche supprimée",
-  "textSelection" : "Date sélectionnée : "
+  "textSelection" : "Date sélectionnée : ",
+  "textMenu" : "Menu ToDoBrice",
+  "textAccueil" : "Accueil",
+  "textCalendrier" : "Calendrier",
+
+
+  "textCredits" : "Crédits",
+  "textDev" : "Développeurs",
+  "textDesign" : "Design UI/UX",
+  "textTechno" : "Technologies utilisées",
+  "textRemerciements" : "Remerciements",
+  "textRetour" : "Retour",
+
+  "textDesRemerciements" : "Merci à la communauté open-source et aux contributeurs de Flutter."
 
 }
